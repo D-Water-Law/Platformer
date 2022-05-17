@@ -3,87 +3,96 @@ pygame.init() # initialises all imported pygame modules
 
 clock = pygame.time.Clock()
 
+WHITE = (255,255,255)
+RED = (255,0,0)
+BLACK = (0,0,0)
+
+class Block(pygame.sprite.Sprite):
+    def __init__(self,pos,width,height):
+        super().__init__()
+        self.block_height = width
+        self.block_width = height
+
+        self.image = pygame.Surface([self.block_width,self.block_height])
+
+        self.rect = self.image.get_rect(topleft=pos)
+
+
+    def update(self,surface):
+        pygame.draw.rect(surface,(WHITE),self.rect)
+    
 
 class Player(pygame.sprite.Sprite): 
     def __init__(self,pos):# pos = position
         super().__init__()# Calls parent class constructor
         
         # creates an image and fills the image in with a colour
-        self.image = pygame.Surface([50,75]) 
-        self.image.fill((255,0,0))
+        self.image = pygame.Surface([25,25]) 
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft = pos)
 
-        # self.direction = pygame.math.Vector2(0,0)
+    def update(self,surface):
+        pygame.draw.rect(surface,RED,self.rect)
 
-    # def get_input(self):
-    #     keys = pygame.key.get_pressed()
 
-    #     if keys[pygame.K_RIGHT]:
-    #         self.direction.x = 1
-    #     else:
-    #         self.direction.x = 0
 
-# level layout 
-# X represents the block and P represents the player
-level = [
-    "X    ",
-    " X   ",
-    "     ",
-    "PXXX ",
-    "X   X",
-    "X    ",
-    "     ",
-    "     ",
-    "     ",
-]
-
-# This is a function that puts each object in a certain position in the screen depending on where the letters are in the string
-def draw_background(backg,surface,size):
-
-    player = pygame.sprite.GroupSingle()# creates a sprite group class that can only contain one sprite which in this case would be player
-    # enumerate() returns (index of the value,the actual value)
-    for row_index,row in enumerate(backg):
-        for col_index,col in enumerate(row):
-            # if an X is found then the programme draws a square in a certain position in the screen
-            if col == "X":
-                pygame.draw.rect(surface,(255,255,255),(col_index*size,row_index*size,100,100))
-            # if a P is found then a player class is created with and it passes a certain position in the screen
-            # then it adds the player into the player group
-            elif col == "P":
-                player_sprite = Player((col_index*100,(row_index*100)+25))
-                player.add(player_sprite)
-
-    return player
-                
-
+class Game:
+    def __init__(self):
+        # level layout 
+        # X represents the block and P represents the player
+        # 
+        self.level =[
+            "               ",
+            "              X",
+            "             X ",
+            "P      XX  XX  ",
+            "XX   XX  XX    ",
+            "  X X     X    ",
+            "               ",
+            "               ",
             
-                
-  
+        ] 
+
+        self.block_height = 50
+        self.block_width = 50
+
+    def getBlockHeight(self):
+        return self.block_height
+    def getNumofRows(self):
+        return len(self.level)
         
-# for row in enumerate(level):
-#     print(row)
-#     for col in enumerate(row[1]):
-#         print(col)
 
-    
+    def setUpLevel(self):
+        self.blocks = pygame.sprite.Group()
+        self.player = pygame.sprite.GroupSingle()# creates a sprite group class that can only contain one sprite which in this case would be player
+        # enumerate() returns (index of the value,the actual value)
+        for row_index,row in enumerate(self.level):
+            for col_index,col in enumerate(row):
+                # if an X is found then the programme creates a Block class and passes it a certain position in the screen
+                if col == "X":
+                    block_sprite = Block((col_index*self.block_width,row_index*self.block_height),self.block_width,self.block_height)
+                    self.blocks.add(block_sprite)
+                # if a P is found then a player class is created with and it passes a certain position in the screen
+                # then it adds the player into the player group
+                elif col == "P":
+                    player_sprite = Player((col_index*self.block_width,(row_index*self.block_height)+25))
+                    self.player.add(player_sprite)
 
-# charateristics of the block
-posx = 100
-posy = 100
-height = 100
-width = 100
+    def run(self,surface):
+        self.blocks.update(surface)
+        self.player.update(surface)
+
+
+
+game = Game() # initialises game class
+game.setUpLevel()
 
 # creates a pygame window and names it
-DISPLAYSURF = pygame.display.set_mode((500,height*len(level)))
+DISPLAYSURF = pygame.display.set_mode((700,game.getBlockHeight()*game.getNumofRows()))
 pygame.display.set_caption("TEst window")
 
 run = True
-
-
-
-player = draw_background(level,DISPLAYSURF,height)
 
 while run:# main game loop
     
@@ -93,8 +102,10 @@ while run:# main game loop
             run = False
 
     
+
+    DISPLAYSURF.fill(BLACK)
     # draws the player on the screen
-    player.draw(DISPLAYSURF)
+    game.run(DISPLAYSURF)
 
     # update the screen
     pygame.display.update()
