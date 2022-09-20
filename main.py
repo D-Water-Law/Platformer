@@ -18,6 +18,55 @@ class Block(pygame.sprite.Sprite):
         # draws the sprite in the display
         pygame.draw.rect(surface,(255,255,255),self.rect)
 
+class Game:
+    def __init__(self):
+        # level layout 
+        # the game screen is going to be split into a grid. The grid is going to be represented by this 2D array
+        # Each cell will contain a number that will indicate what should be in each cell 
+        # 2 represents a block
+        # 20 spaces in one row
+        self.levelmap = [
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,2,0,0,0,0,0,0,0,0,0,0,2,0,2,0,0,0,0],
+            [0,0,0,2,0,0,0,0,0,0,0,0,0,2,0,2,0,0,0,0],
+            [0,0,0,0,2,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0],
+            [0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+            [0,0,0,0,0,0,2,2,2,2,0,0,2,0,0,0,2,2,0,0],
+            [0,0,0,0,0,2,2,0,0,2,0,0,2,2,2,2,2,2,0,0],
+            [2,2,0,2,2,2,2,0,0,2,0,0,2,2,2,2,2,2,0,0],        
+        ] 
+
+        # the game screen is going to be split into a grid. The grid is going to be represent
+        self.unit_height = 32
+        self.unit_width = 32
+        
+
+    def setUpLevel(self): # This function creates all the sprites that are going to be used in this game
+        self.blocks = pygame.sprite.Group()# creates a group that will contain all the block sprites
+        # enumerate() returns (index of the value,the actual value)
+        for row_index,row in enumerate(self.levelmap):
+            for col_index,col in enumerate(row):
+                # if an 2 is found then the programme creates a Block class and passes it a certain position in the screen
+                if col == 2:
+                    block_sprite = Block((col_index*self.unit_width,row_index*self.unit_height),self.unit_width,self.unit_height)
+                    self.blocks.add(block_sprite) # Adds the block to the blocks group
+
+    def draw(self,surface): # draws all the sprites within a group to the screen
+        self.blocks.update(surface)
 
 
 
@@ -25,7 +74,8 @@ class Block(pygame.sprite.Sprite):
 
 clock = pygame.time.Clock()
 
-block = Block((50,50),100,100)
+game = Game() # creating an instance of the game class
+game.setUpLevel()
 
 # creates a pygame window and names it 
 DISPLAYSURF = pygame.display.set_mode((640,704)) # window height and width will be 704x640 pixels
@@ -40,7 +90,7 @@ while run:# main game loop
         if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             run = False
 
-    block.update()
+    game.draw(DISPLAYSURF)
 
     pygame.display.update()
     
