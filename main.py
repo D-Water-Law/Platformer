@@ -1,6 +1,24 @@
 import pygame
 pygame.init() # initialises all imported pygame modules
 
+
+############################################ Sprites #########################################################
+
+class Player(pygame.sprite.Sprite): 
+    def __init__(self,pos):# pos = position
+        super().__init__()# Calls parent class constructor
+        
+        # creates an image
+        self.image = pygame.Surface([12,32]) 
+
+        # Puts this image in a specific location in the screen
+        self.rect = self.image.get_rect(topleft = pos)
+
+    def update(self,surface):
+        # draws the sprite in the display
+        pygame.draw.rect(surface,RED,self.rect)
+
+
 class Block(pygame.sprite.Sprite):
     def __init__(self,pos,width,height): # pos = position, width,height = width and height of the blocks
         super().__init__()
@@ -18,12 +36,13 @@ class Block(pygame.sprite.Sprite):
         # draws the sprite in the display
         pygame.draw.rect(surface,(255,255,255),self.rect)
 
+####################################################################################################
 class Game:
     def __init__(self):
         # level layout 
         # the game screen is going to be split into a grid. The grid is going to be represented by this 2D array
         # Each cell will contain a number that will indicate what should be in each cell 
-        # 2 represents a block
+        # 2 represents a block and 1 represent the player
         # 20 spaces in one row
         self.levelmap = [
             [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
@@ -57,6 +76,7 @@ class Game:
 
     def setUpLevel(self): # This function creates all the sprites that are going to be used in this game
         self.blocks = pygame.sprite.Group()# creates a group that will contain all the block sprites
+        self.player = pygame.sprite.GroupSingle()# creates a sprite group class that can only contain one sprite which in this case would be player
         # enumerate() returns (index of the value,the actual value)
         for row_index,row in enumerate(self.levelmap):
             for col_index,col in enumerate(row):
@@ -64,9 +84,15 @@ class Game:
                 if col == 2:
                     block_sprite = Block((col_index*self.unit_width,row_index*self.unit_height),self.unit_width,self.unit_height)
                     self.blocks.add(block_sprite) # Adds the block to the blocks group
+                # if a 1 is found then a player class is created and it passes a certain position in the screen
+                # then it adds the player into the player group
+                elif col == 1:
+                    player_sprite = Player((col_index*self.unit_width,(row_index*self.unit_height)))
+                    self.player.add(player_sprite)
 
     def draw(self,surface): # draws all the sprites within a group to the screen
         self.blocks.update(surface)
+        self.player.update(surface)
 
 
 
@@ -90,8 +116,10 @@ while run:# main game loop
         if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             run = False
 
+    # draws the player on the screen
     game.draw(DISPLAYSURF)
 
+    # update the screen
     pygame.display.update()
     
     # Caps the framerate to 60 Frames per second
