@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
 
     def update(self,surface):
         # draws the sprite in the display
-        pygame.draw.rect(surface,RED,self.rect)
+        pygame.draw.rect(surface,(255,0,0),self.rect)
 
 
 class Block(pygame.sprite.Sprite):
