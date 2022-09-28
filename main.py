@@ -14,6 +14,13 @@ class Player(pygame.sprite.Sprite):
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft = pos)
 
+
+    def moveRight(self):
+        self.rect.x += 1
+    
+    def moveLeft(self):
+        self.rect.x -= 1 
+
     def update(self,surface):
         # draws the sprite in the display
         pygame.draw.rect(surface,(255,0,0),self.rect)
@@ -37,7 +44,7 @@ class Block(pygame.sprite.Sprite):
         pygame.draw.rect(surface,(255,255,255),self.rect)
 
 ####################################################################################################
-class Game:
+class Game: # This class will store functions and variables necessary for the gameplay and that manipulate the sprites.
     def __init__(self):
         # level layout 
         # the game screen is going to be split into a grid. The grid is going to be represented by this 2D array
@@ -90,40 +97,53 @@ class Game:
                     player_sprite = Player((col_index*self.unit_width,(row_index*self.unit_height)))
                     self.player.add(player_sprite)
 
+    def playerMove(self,key):
+        if key[pygame.K_RIGHT]:
+            self.player_sprite.moveRight()
+        
+
     def draw(self,surface): # draws all the sprites within a group to the screen
         self.blocks.update(surface)
         self.player.update(surface)
 
-
-
-############################# Main Game ###################################################
-
-clock = pygame.time.Clock()
-
-game = Game() # creating an instance of the game class
-game.setUpLevel()
-
-# creates a pygame window and names it 
-DISPLAYSURF = pygame.display.set_mode((640,704)) # window height and width will be 704x640 pixels
-pygame.display.set_caption("Test window")
-
-run = True
-
-while run:# main game loop
-
-    for event in pygame.event.get():# Event handler
-        # ends game loop if the top right cross button or the escape key is pressed
-        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            run = False
-
-    # draws the player on the screen
-    game.draw(DISPLAYSURF)
-
-    # update the screen
-    pygame.display.update()
     
-    # Caps the framerate to 60 Frames per second
-    clock.tick(60)
-    
-# Closes all pygame modules
-pygame.quit()
+
+
+############################# Functions ###################################################
+def gameLoop():
+    clock = pygame.time.Clock()
+
+    game = Game() # creating an instance of the game class
+    game.setUpLevel()
+
+    # creates a pygame window and names it 
+    DISPLAYSURF = pygame.display.set_mode((640,704)) # window height and width will be 704x640 pixels
+    pygame.display.set_caption("Test window")
+
+    run = True
+
+    while run:# main game loop
+
+        for event in pygame.event.get():# Event handler
+            # ends game loop if the top right cross button or the escape key is pressed
+            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                run = False
+
+            # Player movement
+            key = pygame.key.get_pressed()
+            game.playerMove(key)
+
+
+            
+
+        # draws the player on the screen
+        game.draw(DISPLAYSURF)
+
+        # update the screen
+        pygame.display.update()
+        
+        # Caps the framerate to 60 Frames per second
+        clock.tick(60)
+        
+    # Closes all pygame modules
+    pygame.quit()
