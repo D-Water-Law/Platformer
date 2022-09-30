@@ -10,20 +10,22 @@ class Player(pygame.sprite.Sprite):
         
         # creates an image
         self.image = pygame.Surface([12,32]) 
+        self.image.fill((255,0,0))
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft = pos)
 
 
-    def moveRight(self):
-        self.rect.x += 1
-    
-    def moveLeft(self):
-        self.rect.x -= 1 
+    def update(self,input): # moves player
+        key = input
 
-    def update(self,surface):
-        # draws the sprite in the display
-        pygame.draw.rect(surface,(255,0,0),self.rect)
+        if key[pygame.K_RIGHT]:
+            self.rect.x += 1
+        elif key[pygame.K_LEFT]:
+            self.rect.x -= 1
+
+
+        
 
 
 class Block(pygame.sprite.Sprite):
@@ -34,14 +36,11 @@ class Block(pygame.sprite.Sprite):
 
         # creates an image
         self.image = pygame.Surface([self.block_width,self.block_height])
+        self.image.fill((255,255,255))
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft=pos)
 
-
-    def update(self,surface):
-        # draws the sprite in the display
-        pygame.draw.rect(surface,(255,255,255),self.rect)
 
 ####################################################################################################
 class Game: # This class will store functions and variables necessary for the gameplay and that manipulate the sprites.
@@ -97,14 +96,13 @@ class Game: # This class will store functions and variables necessary for the ga
                     player_sprite = Player((col_index*self.unit_width,(row_index*self.unit_height)))
                     self.player.add(player_sprite)
 
-    def playerMove(self,key):
-        if key[pygame.K_RIGHT]:
-            self.player_sprite.moveRight()
+    def playerMove(self,key): # Allows movement of player sprite
+            self.player.update(key)
         
 
     def draw(self,surface): # draws all the sprites within a group to the screen
-        self.blocks.update(surface)
-        self.player.update(surface)
+        self.blocks.draw(surface)
+        self.player.draw(surface)
 
     
 
@@ -129,13 +127,13 @@ def gameLoop():
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
 
-            # Player movement
-            key = pygame.key.get_pressed()
-            game.playerMove(key)
+        # Player movement
+        key = pygame.key.get_pressed() # gets boolean value of every key on the keyboard
+        game.playerMove(key)
 
 
             
-
+        DISPLAYSURF.fill((0,0,0))
         # draws the player on the screen
         game.draw(DISPLAYSURF)
 
@@ -147,3 +145,5 @@ def gameLoop():
         
     # Closes all pygame modules
     pygame.quit()
+
+gameLoop()
