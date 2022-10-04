@@ -24,6 +24,8 @@ class Player(pygame.sprite.Sprite):
         elif key[pygame.K_LEFT]:
             self.rect.x -= 1
 
+    def getRect(self): # returns rect value of player sprite
+        return self.rect
 
         
 
@@ -104,7 +106,7 @@ class Game: # This class will store functions and variables necessary for the ga
         self.blocks.draw(surface)
         self.player.draw(surface)
 
-    
+
 
 
 ############################# Functions ###################################################
