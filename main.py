@@ -16,13 +16,21 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
 
 
-    def update(self,input): # moves player
-        key = input
+    def update(self): # moves player
+        key = pygame.key.get_pressed()
 
         if key[pygame.K_RIGHT]:
             self.rect.x += 1
         elif key[pygame.K_LEFT]:
             self.rect.x -= 1
+
+        # checks for collison between the sides of the screen
+        if self.rect.x < 0:
+            self.rect.x = 0
+        elif self.rect.x > 628:
+            self.rect.x = 628
+        
+
 
     def getRect(self): # returns rect value of player sprite
         return self.rect
@@ -97,9 +105,8 @@ class Game: # This class will store functions and variables necessary for the ga
                 elif col == 1:
                     player_sprite = Player((col_index*self.unit_width,(row_index*self.unit_height)))
                     self.player.add(player_sprite)
-
-    def playerMove(self,key): # Allows movement of player sprite
-            self.player.update(key)
+        
+        return self.player, self.blocks
         
 
     def draw(self,surface): # draws all the sprites within a group to the screen
@@ -114,7 +121,7 @@ def gameLoop():
     clock = pygame.time.Clock()
 
     game = Game() # creating an instance of the game class
-    game.setUpLevel()
+    playerGroup, blockGroup = game.setUpLevel()
 
     # creates a pygame window and names it 
     DISPLAYSURF = pygame.display.set_mode((640,704)) # window height and width will be 704x640 pixels
@@ -129,13 +136,14 @@ def gameLoop():
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
 
-        # Player movement
-        key = pygame.key.get_pressed() # gets boolean value of every key on the keyboard
-        game.playerMove(key)
+        # updates player position
+        playerGroup.update()
+        # Collision handler
+        
 
-
-            
+        # resets the whole screen    
         DISPLAYSURF.fill((0,0,0))
+
         # draws the player on the screen
         game.draw(DISPLAYSURF)
 
