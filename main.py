@@ -14,15 +14,40 @@ class Player(pygame.sprite.Sprite):
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft = pos)
+        
+        self.speedX = 1
+        self.speedY = 0
+
+        self.jumping = False
+        
+        self.gravity = 1
 
 
     def update(self): # moves player
-        key = pygame.key.get_pressed()
+        key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
 
         if key[pygame.K_RIGHT]:
-            self.rect.x += 1
+            self.rect.x += self.speedX
         elif key[pygame.K_LEFT]:
-            self.rect.x -= 1
+            self.rect.x -= self.speedX
+        
+        if key[pygame.K_SPACE] and self.jumping == False:
+            self.jumping = True
+            self.speedY = 10
+        
+        if self.jumping == True: ############################ Upload vid ######################
+            self.rect.y -= self.speedY
+        
+        if self.jumping == True and self.speedY < -10:
+            self.jumping = False
+        
+
+        # Adds gravity to the player
+        self.speedY -= self.gravity
+
+
+        
+
 
         # checks for collison between the sides of the screen
         if self.rect.x < 0:
@@ -79,9 +104,9 @@ class Game: # This class will store functions and variables necessary for the ga
             [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+            [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
             [0,0,0,0,0,0,2,2,2,2,0,0,2,0,0,0,2,2,0,0],
-            [1,0,0,0,0,2,2,0,0,2,0,0,2,2,2,2,2,2,0,0],
+            [0,0,0,0,0,2,2,0,0,2,0,0,2,2,2,2,2,2,0,0],
             [2,2,0,2,2,2,2,0,0,2,0,0,2,2,2,2,2,2,0,0],        
         ] 
 
