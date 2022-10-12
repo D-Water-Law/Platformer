@@ -35,8 +35,7 @@ class Player(pygame.sprite.Sprite):
             self.jumping = True
             self.speedY = 10
         
-        if self.jumping == True: ############################ Upload vid ######################
-            self.rect.y -= self.speedY
+
         
         if self.jumping == True and self.speedY < -10:
             self.jumping = False
@@ -44,6 +43,7 @@ class Player(pygame.sprite.Sprite):
 
         # Adds gravity to the player
         self.speedY -= self.gravity
+        self.rect.y -= self.speedY
 
 
         
@@ -88,7 +88,7 @@ class Game: # This class will store functions and variables necessary for the ga
         self.levelmap = [
             [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -104,7 +104,7 @@ class Game: # This class will store functions and variables necessary for the ga
             [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0],
-            [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
             [0,0,0,0,0,0,2,2,2,2,0,0,2,0,0,0,2,2,0,0],
             [0,0,0,0,0,2,2,0,0,2,0,0,2,2,2,2,2,2,0,0],
             [2,2,0,2,2,2,2,0,0,2,0,0,2,2,2,2,2,2,0,0],        
@@ -164,6 +164,8 @@ def gameLoop():
         # updates player position
         playerGroup.update()
         # Collision handler
+        for block in blockGroup.sprites():
+            pass ##### use colliderect function
         
 
         # resets the whole screen    

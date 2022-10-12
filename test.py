@@ -1,15 +1,23 @@
-grid = [1,0,0,1]
+import pygame
+class Player(pygame.sprite.Sprite): 
+    def __init__(self,pos):# pos = position
+        super().__init__()# Calls parent class constructor
+        
+        # creates an image
+        self.image = pygame.Surface([12,32]) 
+        self.image.fill((255,0,0))
 
-for index,data in enumerate(grid):
-    print(index,data)
+        # Puts this image in a specific location in the screen
+        self.rect = self.image.get_rect(topleft = pos)
+        
+        self.speedX = 1
+        self.speedY = 0
+
+        self.jumping = False
+        
+        self.gravity = 1
 
 
-def make_readable(seconds):
-    if seconds == 0:
-        return "00:00:00"
-    else:
-        hh = seconds // 3600
-        mm = seconds // 60
-        ss = seconds 
+p = Player((3,3))
 
-
+print(p.rect)
