@@ -165,7 +165,8 @@ def gameLoop():
         playerGroup.update()
         # Collision handler
         for block in blockGroup.sprites():
-            pass ##### use colliderect function
+            if block.rect.colliderect(playerGroup.sprites()[0]):
+                print("Lol") #this works :)
         
 
         # resets the whole screen    
