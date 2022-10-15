@@ -20,4 +20,4 @@ class Player(pygame.sprite.Sprite):
 
 p = Player((3,3))
 
-print(p.rect)
+print(p.rect.top)
