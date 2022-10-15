@@ -15,8 +15,6 @@ class Player(pygame.sprite.Sprite):
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft = pos)
         
-        
-        
         self.speedX = 1
         self.speedY = 0
 
@@ -24,28 +22,30 @@ class Player(pygame.sprite.Sprite):
         
         self.gravity = 1
 
-        self.direction = pygame.Vector2(0,0)
 
     def update(self): # moves player
-        self.direction.x = 0
-        self.direction.y = 0
-        
         key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
 
         if key[pygame.K_RIGHT]:
-            self.direction.x = 1
+            self.rect.x += self.speedX
         elif key[pygame.K_LEFT]:
-            self.direction.x = -1
+            self.rect.x -= self.speedX
         
         if key[pygame.K_SPACE] and self.jumping == False:
             self.jumping = True
-            self.direction.y = -1
             self.speedY = 10
         
 
         
         if self.jumping == True and self.speedY < -10:
             self.jumping = False
+        
+
+        # Adds gravity to the player
+        self.speedY -= self.gravity
+        self.rect.y -= self.speedY
+
+
         
 
 
@@ -55,14 +55,7 @@ class Player(pygame.sprite.Sprite):
         elif self.rect.x > 628:
             self.rect.x = 628
         
- 
 
-        self.rect.x += self.direction.x * self.speedX ####
-        # Adds gravity to the player
-        self.speedY -= self.gravity
-        self.rect.y -= self.speedY
-
-        print(self.direction.x)
 
     def getRect(self): # returns rect value of player sprite
         return self.rect
@@ -171,14 +164,9 @@ def gameLoop():
         # updates player position
         playerGroup.update()
         # Collision handler
-        player = playerGroup.sprites()[0]
         for block in blockGroup.sprites():
-            if block.rect.colliderect(player):
-                print( player.speedY)
-                if (player.direction.y * player.speedY) > 0: # going down
-                    player.rect.bottom = block.rect.top
-                elif (player.direction.y * player.speedY) < 0: # going update
-                    player.rect.top = block.rect.bottom
+            if block.rect.colliderect(playerGroup.sprites()[0]):
+                print("Lol") #this works :)
         
 
         # resets the whole screen    
