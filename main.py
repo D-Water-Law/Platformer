@@ -22,6 +22,11 @@ class Player(pygame.sprite.Sprite):
         
         self.gravity = 1
 
+        
+
+    def jumpReset(self):
+        self.jumping = False
+
 
     def update(self): # moves player
         key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
@@ -29,25 +34,20 @@ class Player(pygame.sprite.Sprite):
         if key[pygame.K_RIGHT]:
             self.rect.x += self.speedX
         elif key[pygame.K_LEFT]:
-            self.rect.x -= self.speedX
+            self.rect.x += -self.speedX
         
         if key[pygame.K_SPACE] and self.jumping == False:
             self.jumping = True
-            self.speedY = 10
+            self.speedY = -10
         
-
         
-        if self.jumping == True and self.speedY < -10:
+        if self.jumping == True and self.speedY > 10:
             self.jumping = False
         
 
         # Adds gravity to the player
-        self.speedY -= self.gravity
-        self.rect.y -= self.speedY
-
-
-        
-
+        self.speedY += self.gravity
+        self.rect.y += self.speedY
 
         # checks for collison between the sides of the screen
         if self.rect.x < 0:
@@ -164,10 +164,20 @@ def gameLoop():
         # updates player position
         playerGroup.update()
         # Collision handler
-        for block in blockGroup.sprites():
-            if block.rect.colliderect(playerGroup.sprites()[0]):
-                print("Lol") #this works :)
-        
+        player = playerGroup.sprites()[0] # puts the player sprite within the group inside the variable
+        for block in blockGroup.sprites(): #loops every block in the game
+            if block.rect.colliderect(player): # checks if the block rect and the player rect have collided returns true if so
+                if player.speedY > 0: # going down
+                    print("bottom")
+                    player.rect.bottom = block.rect.top
+                    player.jumpReset()
+                elif player.speedY < 0: #going up
+                    print("top")
+                    player.rect.top = block.rect.bottom 
+                
+                player.speedY = 0 #reset player speed to prevent falling through block 
+
+                
 
         # resets the whole screen    
         DISPLAYSURF.fill((0,0,0))
