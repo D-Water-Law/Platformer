@@ -57,6 +57,33 @@ class Player(pygame.sprite.Sprite):
         
 
 
+    def xMove(self):
+        key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
+
+        if key[pygame.K_RIGHT]:
+            self.rect.x += self.speedX
+        elif key[pygame.K_LEFT]:
+            self.rect.x += -self.speedX
+    
+    def yMove(self):
+        key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
+        if key[pygame.K_SPACE] and self.jumping == False:
+            self.jumping = True
+            self.speedY = -10
+        
+        
+        if self.jumping == True and self.speedY > 10:
+            self.jumping = False
+        
+
+        # Adds gravity to the player
+        self.speedY += self.gravity
+        self.rect.y += self.speedY
+
+
+
+
+    
     def getRect(self): # returns rect value of player sprite
         return self.rect
 
