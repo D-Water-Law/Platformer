@@ -177,23 +177,24 @@ def gameLoop():
         playerGroup.update()
 
         player = playerGroup.sprites()[0] # puts the player sprite within the group inside the variable
-        #Do y movement
+        # player y movement
         player.yMove()
+            
         # Collision handler for y
         for block in blockGroup.sprites(): #loops every block in the game
-            if block.rect.colliderect(player): # checks if the block rect and the player rect have collided returns true if so
+            if block.rect.colliderect(player): # checks if the block rect and the player rect have collided returns true if so           #if pygame.sprite.spritecollideany(player,blockGroup):
+                                                                                                                                         # use this function if the program gets too slow
                 if player.speedY > 0: # going down
-                    print("bottom")
                     player.rect.bottom = block.rect.top
                     player.jumpReset()
                 elif player.speedY < 0: #going up
-                    print("top")
                     player.rect.top = block.rect.bottom 
                 
                 player.speedY = 0 #reset player speed to prevent falling through block 
 
-        # Do x movement
+        # player x movement
         player.xMove()
+
         # do collision handler for x  
         for block in blockGroup.sprites():
             if block.rect.colliderect(player):
