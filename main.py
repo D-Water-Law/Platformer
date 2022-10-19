@@ -15,6 +15,7 @@ class Player(pygame.sprite.Sprite):
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft = pos)
         
+        self.directionX = 0
         self.speedX = 1
         self.speedY = 0
 
@@ -29,31 +30,13 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self): # moves player
-        key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
-
-        if key[pygame.K_RIGHT]:
-            self.rect.x += self.speedX
-        elif key[pygame.K_LEFT]:
-            self.rect.x += -self.speedX
-        
-        if key[pygame.K_SPACE] and self.jumping == False:
-            self.jumping = True
-            self.speedY = -10
-        
-        
-        if self.jumping == True and self.speedY > 10:
-            self.jumping = False
-        
-
-        # Adds gravity to the player
-        self.speedY += self.gravity
-        self.rect.y += self.speedY
-
         # checks for collison between the sides of the screen
         if self.rect.x < 0:
             self.rect.x = 0
         elif self.rect.x > 628:
             self.rect.x = 628
+
+        self.directionX = 0
         
 
 
@@ -61,10 +44,12 @@ class Player(pygame.sprite.Sprite):
         key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
 
         if key[pygame.K_RIGHT]:
-            self.rect.x += self.speedX
+            self.directionX = 1
         elif key[pygame.K_LEFT]:
-            self.rect.x += -self.speedX
+            self.directionX = -1
     
+        self.rect.x += self.speedX * self.directionX
+
     def yMove(self):
         key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
         if key[pygame.K_SPACE] and self.jumping == False:
@@ -190,8 +175,11 @@ def gameLoop():
 
         # updates player position
         playerGroup.update()
-        # Collision handler
+
         player = playerGroup.sprites()[0] # puts the player sprite within the group inside the variable
+        #Do y movement
+        player.yMove()
+        # Collision handler for y
         for block in blockGroup.sprites(): #loops every block in the game
             if block.rect.colliderect(player): # checks if the block rect and the player rect have collided returns true if so
                 if player.speedY > 0: # going down
@@ -204,6 +192,15 @@ def gameLoop():
                 
                 player.speedY = 0 #reset player speed to prevent falling through block 
 
+        # Do x movement
+        player.xMove()
+        # do collision handler for x  
+        for block in blockGroup.sprites():
+            if block.rect.colliderect(player):
+                if player.directionX > 0: # moving right
+                    player.rect.right = block.rect.left
+                elif player.directionX < 0: # moving left
+                    player.rect.left = block.rect.right
                 
 
         # resets the whole screen    
