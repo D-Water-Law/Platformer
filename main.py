@@ -25,7 +25,7 @@ class Player(pygame.sprite.Sprite):
 
         
 
-    def jumpReset(self):
+    def jumpReset(self): # resets jump
         self.jumping = False
 
 
@@ -48,17 +48,14 @@ class Player(pygame.sprite.Sprite):
         elif key[pygame.K_LEFT]:
             self.directionX = -1
     
-        self.rect.x += self.speedX * self.directionX
+        self.rect.x += self.speedX * self.directionX * 2.5
 
     def yMove(self):
         key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
         if key[pygame.K_SPACE] and self.jumping == False:
             self.jumping = True
-            self.speedY = -10
+            self.speedY = -13
         
-        
-        if self.jumping == True and self.speedY > 10:
-            self.jumping = False
         
 
         # Adds gravity to the player
@@ -108,13 +105,13 @@ class Game: # This class will store functions and variables necessary for the ga
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,2,0,0,0,0,0,0,0,0,0,0,0,2,0,2,0,0,0,0],
             [0,0,2,0,0,0,0,0,0,0,0,0,0,2,0,2,0,0,0,0],
-            [0,0,0,2,0,0,0,0,0,0,0,0,0,2,0,2,0,0,0,0],
-            [0,0,0,0,2,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0],
+            [0,0,0,2,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0],
+            [0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+            [0,0,0,0,0,0,2,2,2,2,2,2,2,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
             [0,0,0,0,0,0,2,2,2,2,0,0,2,0,0,0,2,2,0,0],
