@@ -1,6 +1,32 @@
 import pygame
 pygame.init() # initialises all imported pygame modules
 
+######################################### Menu buttons #######################################################
+class Button(pygame.sprite.Sprite):
+    def __init__(self,command,img=None): # pos = position, width,height = width and height of the blocks
+        super().__init__()
+
+        # creates an image
+        if img == None:
+            self.image = pygame.Surface([175,40])
+            self.image.fill((255,255,255))
+        else:
+            self.image = pygame.image.load(img)
+
+        # Puts this image in a specific location in the screen
+        self.rect = self.image.get_rect(center=(320,200))
+        
+    
+    def start(self):
+        gameLoop()
+
+    def quit(self):
+        return 1
+
+    def settings(self):
+        pass
+        # settingsLoop()
+        
 
 ############################################ Sprites #########################################################
 
@@ -158,6 +184,13 @@ def menu():
     background = pygame.transform.scale(background_img,(640,704)) # changes size of the image
     
     run = True
+    buttonGroup = pygame.sprite.Group()
+
+    startGame = Button("Start")
+    #quitGame = Button("Quit")
+
+    buttonGroup.add(startGame)
+    
 
     while run:# main menu loop
 
@@ -165,8 +198,10 @@ def menu():
             # ends game loop if the top right cross button or the escape key is pressed
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
-    
+
+
         DISPLAYSURF.blit(background,(0,0)) # displays image in screen
+        buttonGroup.draw(DISPLAYSURF)
         pygame.display.update() # displays changes made in screen
         
 
@@ -236,4 +271,3 @@ def gameLoop():
     pygame.quit()
 
 menu()
-gameLoop()
