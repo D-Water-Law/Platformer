@@ -151,6 +151,25 @@ class Game: # This class will store functions and variables necessary for the ga
 
 
 ############################# Functions ###################################################
+def menu():
+    DISPLAYSURF = pygame.display.set_mode((640,704)) # window height and width will be 704x640 pixels
+    pygame.display.set_caption("Menu") # sets name of window
+    background_img = pygame.image.load("images/background.jpg") # loads the background image
+    background = pygame.transform.scale(background_img,(640,704)) # changes size of the image
+    
+    run = True
+
+    while run:# main menu loop
+
+        for event in pygame.event.get():# Event handler
+            # ends game loop if the top right cross button or the escape key is pressed
+            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                run = False
+    
+        DISPLAYSURF.blit(background,(0,0)) # displays image in screen
+        pygame.display.update() # displays changes made in screen
+        
+
 def gameLoop():
     clock = pygame.time.Clock()
 
@@ -216,4 +235,5 @@ def gameLoop():
     # Closes all pygame modules
     pygame.quit()
 
+menu()
 gameLoop()
