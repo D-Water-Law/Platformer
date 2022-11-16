@@ -3,18 +3,22 @@ pygame.init() # initialises all imported pygame modules
 
 ######################################### Menu buttons #######################################################
 class Button(pygame.sprite.Sprite):
-    def __init__(self,command,img=None): # pos = position, width,height = width and height of the blocks
+    def __init__(self,command,pos,img=None):
         super().__init__()
-
+        
+        self.command = command
         # creates an image
-        if img == None:
+        if self.command != "settings":
             self.image = pygame.Surface([175,40])
             self.image.fill((255,255,255))
         else:
-            self.image = pygame.image.load(img)
+            # Puts this image in a specific location in the screen
+            loadedImage = pygame.image.load(img)
+            self.image = pygame.transform.scale(loadedImage,(100,100)) # changes size of the image
+            
 
         # Puts this image in a specific location in the screen
-        self.rect = self.image.get_rect(center=(320,200))
+        self.rect = self.image.get_rect(center=pos)
         
     
     def start(self):
@@ -26,6 +30,15 @@ class Button(pygame.sprite.Sprite):
     def settings(self):
         pass
         # settingsLoop()
+
+    def update(self):
+        mousePos = pygame.mouse.get_pos() # gets mouse position
+
+        if self.command != "settings":
+            if self.rect.collidepoint(mousePos): # checks if the position of the mouse is over the button
+                self.image.fill((255,0,0)) #fills button with red
+            else:
+                self.image.fill((255,255,255)) #fills button with white
         
 
 ############################################ Sprites #########################################################
@@ -186,10 +199,16 @@ def menu():
     run = True
     buttonGroup = pygame.sprite.Group()
 
-    startGame = Button("Start")
-    #quitGame = Button("Quit")
+    startGame = Button("start",(320,230))
+    selectGame = Button("select",(320,330))
+    quitGame = Button("quit",(320,430))
+    options = Button("settings",(585,650),"images/gear_Icon.png")
 
     buttonGroup.add(startGame)
+    buttonGroup.add(selectGame)
+    buttonGroup.add(quitGame)
+    buttonGroup.add(options)
+
     
 
     while run:# main menu loop
@@ -198,7 +217,8 @@ def menu():
             # ends game loop if the top right cross button or the escape key is pressed
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
-
+        
+        buttonGroup.update()
 
         DISPLAYSURF.blit(background,(0,0)) # displays image in screen
         buttonGroup.draw(DISPLAYSURF)
