@@ -291,3 +291,4 @@ def gameLoop():
     pygame.quit()
 
 menu()
+gameLoop()
