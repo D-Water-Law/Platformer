@@ -23,18 +23,10 @@ class Button(pygame.sprite.Sprite):
         # Inserts text in buttons
         font = pygame.font.SysFont("Arial",40)
         self.text = font.render(command, True, (0,0,0))
+
+    def getCommand(self):
+        return self.command
         
-    
-    def start(self):
-        gameLoop()
-
-    def quit(self):
-        return 1
-
-    def settings(self):
-        pass
-        # settingsLoop()
-
     def update(self):
         mousePos = pygame.mouse.get_pos() # gets mouse position
 
@@ -220,12 +212,17 @@ def menu():
     
 
     while run:# main menu loop
-
+        mousePos = pygame.mouse.get_pos()
         for event in pygame.event.get():# Event handler
             # ends game loop if the top right cross button or the escape key is pressed
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
-        
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                for button in buttonGroup.sprites():
+                    if button.rect.collidepoint(mousePos):
+                        print(button.getCommand())
+                        return button.getCommand()
+                
         buttonGroup.update()
 
         DISPLAYSURF.blit(background,(0,0)) # displays image in screen
@@ -298,5 +295,14 @@ def gameLoop():
     # Closes all pygame modules
     pygame.quit()
 
-menu()
-gameLoop()
+
+action = menu()
+
+if action == "start":
+    gameLoop()
+elif action == "select":
+    pass
+elif action == "quit":
+    pass
+elif action == "options":
+    pass
