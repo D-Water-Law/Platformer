@@ -9,7 +9,7 @@ class Button(pygame.sprite.Sprite):
         self.command = command
         # creates an image
         if self.command != "settings":
-            self.image = pygame.Surface([175,40])
+            self.image = pygame.Surface([125,40])
             self.image.fill((255,255,255))
         else:
             # Puts this image in a specific location in the screen
@@ -19,6 +19,10 @@ class Button(pygame.sprite.Sprite):
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(center=pos)
+
+        # Inserts text in buttons
+        font = pygame.font.SysFont("Arial",40)
+        self.text = font.render(command, True, (0,0,0))
         
     
     def start(self):
@@ -39,6 +43,10 @@ class Button(pygame.sprite.Sprite):
                 self.image.fill((255,0,0)) #fills button with red
             else:
                 self.image.fill((255,255,255)) #fills button with white
+
+            # blits text into button
+            self.image.blit(self.text,(27,-5))
+        
         
 
 ############################################ Sprites #########################################################
