@@ -48,8 +48,9 @@ class Player(pygame.sprite.Sprite):
         super().__init__()# Calls parent class constructor
         
         # creates an image
-        self.image = pygame.Surface([12,32]) 
-        self.image.fill((255,0,0))
+        playerImage = pygame.image.load("images/player/standing.png")
+        playerImage = pygame.transform.scale(playerImage,(22,42))
+        self.image = playerImage #12,32
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft = pos)
@@ -220,7 +221,6 @@ def menu():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 for button in buttonGroup.sprites():
                     if button.rect.collidepoint(mousePos):
-                        print(button.getCommand())
                         return button.getCommand()
                 
         buttonGroup.update()
@@ -304,5 +304,5 @@ elif action == "select":
     pass
 elif action == "quit":
     pass
-elif action == "options":
+elif action == "settings":
     pass
