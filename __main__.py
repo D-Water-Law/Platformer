@@ -47,9 +47,10 @@ class Player(pygame.sprite.Sprite):
     def __init__(self,pos):# pos = position
         super().__init__()# Calls parent class constructor
         
+        self.size = (32,52)
         # creates an image
         playerImage = pygame.image.load("images/player/standing.png")
-        playerImage = pygame.transform.scale(playerImage,(22,42))
+        playerImage = pygame.transform.scale(playerImage,self.size)
         self.image = playerImage
 
         # Puts this image in a specific location in the screen
@@ -98,7 +99,7 @@ class Player(pygame.sprite.Sprite):
         elif key[pygame.K_LEFT]:
             self.directionX = -1
             self.state = "running"
-        else:
+        elif self.jumping == False:
             self.state = "idle"
     
         self.rect.x += self.speedX * self.directionX * 2.5
@@ -108,6 +109,8 @@ class Player(pygame.sprite.Sprite):
         if key[pygame.K_SPACE] and self.jumping == False:
             self.jumping = True
             self.speedY = -13
+            # self.animaCounter = 0 ## stakeholder found a bug where if spacebaar is held falling image remains
+        
         
         
 
@@ -124,16 +127,15 @@ class Player(pygame.sprite.Sprite):
 
     def loadPlayerImages(self): # loads player images
         
-        scale = (22,42)
         ## idle images #####
         idle1 = pygame.image.load("images/player/idle/1.png")
         idle2 = pygame.image.load("images/player/idle/2.png")
         idle3 = pygame.image.load("images/player/idle/3.png")
         idle4 = pygame.image.load("images/player/idle/4.png")
-        self.idleAnima = [pygame.transform.scale(idle1,scale),
-                          pygame.transform.scale(idle2,scale),
-                          pygame.transform.scale(idle3,scale),
-                          pygame.transform.scale(idle4,scale)]
+        self.idleAnima = [pygame.transform.scale(idle1,self.size),
+                          pygame.transform.scale(idle2,self.size),
+                          pygame.transform.scale(idle3,self.size),
+                          pygame.transform.scale(idle4,self.size)]
 
         # running images ####
 
@@ -143,14 +145,39 @@ class Player(pygame.sprite.Sprite):
         run4 = pygame.image.load("images/player/running/4.png")
         run5 = pygame.image.load("images/player/running/5.png")
         run6 = pygame.image.load("images/player/running/6.png")
-        self.runningAnima = [pygame.transform.scale(run1,scale),
-                             pygame.transform.scale(run2,scale), 
-                             pygame.transform.scale(run3,scale),
-                             pygame.transform.scale(run4,scale),
-                             pygame.transform.scale(run5,scale),
-                             pygame.transform.scale(run6,scale)]
+        self.runningAnima = [pygame.transform.scale(run1,self.size),
+                             pygame.transform.scale(run2,self.size), 
+                             pygame.transform.scale(run3,self.size),
+                             pygame.transform.scale(run4,self.size),
+                             pygame.transform.scale(run5,self.size),
+                             pygame.transform.scale(run6,self.size)]
+        
+        jump1 = pygame.image.load("images/player/jumping/1.png")
+        jump2 = pygame.image.load("images/player/jumping/2.png")
+        jump3 = pygame.image.load("images/player/jumping/3.png")
+        jump4 = pygame.image.load("images/player/jumping/4.png")
+        jump5 = pygame.image.load("images/player/jumping/5.png")
+        jump6 = pygame.image.load("images/player/jumping/6.png")
+        jump7 = pygame.image.load("images/player/jumping/7.png")
+        fall = pygame.image.load("images/player/fall.png")
+        land = pygame.image.load("images/player/land.png")
+        self.jumpingAnima = [pygame.transform.scale(jump1,self.size),
+                             pygame.transform.scale(jump2,self.size),
+                             pygame.transform.scale(jump3,self.size),
+                             pygame.transform.scale(jump4,self.size),
+                             pygame.transform.scale(jump5,self.size),
+                             pygame.transform.scale(jump6,self.size),
+                             pygame.transform.scale(jump7,self.size),
+                             pygame.transform.scale(fall,self.size),
+                             pygame.transform.scale(land,self.size)
+
+        ]
+
 
     def animation(self):
+        if self.jumping == True:
+            self.state = "jumping"
+        
         self.animaFrame = (self.animaFrame+1) % 6
         if self.animaFrame == 5:
             if self.state == "idle":
@@ -161,6 +188,23 @@ class Player(pygame.sprite.Sprite):
             elif self.state == "running":
                 self.animaCounter = (self.animaCounter+1) % len(self.runningAnima) # makes it so animacounter constantly counts up to length of list, resets then repeats
                 self.image = self.runningAnima[self.animaCounter] # sets the new image
+
+        if self.state == "jumping":
+            if self.animaCounter < len(self.jumpingAnima)-3: #  its minus 2 because last 2 images are the falling image and the landing image
+                self.animaCounter += 3
+                print(self.animaCounter)
+                self.image = self.jumpingAnima[self.animaCounter]
+            elif self.animaCounter == 6 and self.speedY > 1: # this it passes this if statement player is falling 
+                self.state = "falling"
+
+            if self.state == "falling":
+                self.image = self.jumpingAnima[7]
+
+                    
+
+
+
+
 
         
 
@@ -308,6 +352,7 @@ def gameLoop():
         playerGroup.update()
 
         player = playerGroup.sprites()[0] # puts the player sprite within the group inside the variable
+        print(player.state)
         # player y movement
         player.yMove()
             
