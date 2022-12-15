@@ -94,8 +94,12 @@ class Player(pygame.sprite.Sprite):
 
         if key[pygame.K_RIGHT]:
             self.directionX = 1
+            self.state = "running"
         elif key[pygame.K_LEFT]:
             self.directionX = -1
+            self.state = "running"
+        else:
+            self.state = "idle"
     
         self.rect.x += self.speedX * self.directionX * 2.5
 
@@ -119,15 +123,32 @@ class Player(pygame.sprite.Sprite):
         return self.rect
 
     def loadPlayerImages(self): # loads player images
+        
+        scale = (22,42)
+        ## idle images #####
         idle1 = pygame.image.load("images/player/idle/1.png")
         idle2 = pygame.image.load("images/player/idle/2.png")
         idle3 = pygame.image.load("images/player/idle/3.png")
         idle4 = pygame.image.load("images/player/idle/4.png")
-        self.idleAnima = [pygame.transform.scale(idle1,(22,42)),
-                          pygame.transform.scale(idle2,(22,42)),
-                          pygame.transform.scale(idle3,(22,42)),
-                          pygame.transform.scale(idle4,(22,42))]
+        self.idleAnima = [pygame.transform.scale(idle1,scale),
+                          pygame.transform.scale(idle2,scale),
+                          pygame.transform.scale(idle3,scale),
+                          pygame.transform.scale(idle4,scale)]
 
+        # running images ####
+
+        run1 = pygame.image.load("images/player/running/1.png")
+        run2 = pygame.image.load("images/player/running/2.png")
+        run3 = pygame.image.load("images/player/running/3.png")
+        run4 = pygame.image.load("images/player/running/4.png")
+        run5 = pygame.image.load("images/player/running/5.png")
+        run6 = pygame.image.load("images/player/running/6.png")
+        self.runningAnima = [pygame.transform.scale(run1,scale),
+                             pygame.transform.scale(run2,scale), 
+                             pygame.transform.scale(run3,scale),
+                             pygame.transform.scale(run4,scale),
+                             pygame.transform.scale(run5,scale),
+                             pygame.transform.scale(run6,scale)]
 
     def animation(self):
         self.animaFrame = (self.animaFrame+1) % 6
@@ -136,6 +157,11 @@ class Player(pygame.sprite.Sprite):
 
                 self.animaCounter = (self.animaCounter+1) % len(self.idleAnima) # makes it so animacounter constantly counts up to length of list, resets then repeats
                 self.image = self.idleAnima[self.animaCounter] # sets the new image
+            
+            elif self.state == "running":
+                self.animaCounter = (self.animaCounter+1) % len(self.runningAnima) # makes it so animacounter constantly counts up to length of list, resets then repeats
+                self.image = self.runningAnima[self.animaCounter] # sets the new image
+
         
 
         
