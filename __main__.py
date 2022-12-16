@@ -190,11 +190,10 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.runningAnima[self.animaCounter] # sets the new image
 
         if self.state == "jumping":
-            if self.animaCounter < len(self.jumpingAnima)-3: #  its minus 2 because last 2 images are the falling image and the landing image
-                self.animaCounter += 3
-                print(self.animaCounter)
+            if self.animaCounter < len(self.jumpingAnima)-3: #  its minus 3 because last 2 images are the falling image and the landing image
+                self.animaCounter += 1
                 self.image = self.jumpingAnima[self.animaCounter]
-            elif self.animaCounter == 6 and self.speedY > 1: # this it passes this if statement player is falling 
+            elif self.animaCounter == 6 and self.speedY > 1: # this passes this if statement player is falling 
                 self.state = "falling"
 
             if self.state == "falling":
