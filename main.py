@@ -112,7 +112,7 @@ class Player(pygame.sprite.Sprite):
         if key[pygame.K_SPACE] and self.jumping == False:
             self.jumping = True
             self.speedY = -13
-            # self.animaCounter = 0 ## stakeholder found a bug where if spacebaar is held falling image remains
+            self.animaCounter = 0
         
         
         
@@ -178,24 +178,19 @@ class Player(pygame.sprite.Sprite):
 
 
     def animation(self):
-        changed = False
         if self.jumping == True:
             self.state = "jumping"
 
 
-
-
+        ## these if statements set the value of self.facing depending on what direction
+        # the player is looking at
         if self.directionX == -1 and self.facing == "right":
             self.facing = "left"
-            changed = True
+
         elif self.directionX == 1 and self.facing == "left":
             self.facing = "right"
-            changed = True
-        
-        if changed == True:
-            changed = False
-            print("switch")
 
+        
 
 
 
