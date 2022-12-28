@@ -233,22 +233,16 @@ class Player(pygame.sprite.Sprite):
 
 
 
-
-
-        
-
-        
-
-
 class Block(pygame.sprite.Sprite):
     def __init__(self,pos,width,height): # pos = position, width,height = width and height of the blocks
         super().__init__()
         self.block_height = width
         self.block_width = height
 
-        # creates an image
-        self.image = pygame.Surface([self.block_width,self.block_height])
-        self.image.fill((255,255,255))
+
+        # loads and resizes an image
+        loadedImage = pygame.image.load("images/brick.jpg")
+        self.image = pygame.transform.scale(loadedImage,(self.block_width,self.block_height))
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft=pos)
