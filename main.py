@@ -68,6 +68,7 @@ class Player(pygame.sprite.Sprite):
         self.animaCounter = 0 # animation counter
         self.state = "idle" # current state of the player
         self.animaFrame = 0
+        self.facing = "right"
         
 
     def jumpReset(self): # resets jump
@@ -81,10 +82,12 @@ class Player(pygame.sprite.Sprite):
         elif self.rect.x > 628:
             self.rect.x = 628
 
-        self.directionX = 0
-
         # performs animation
         self.animation()
+
+        
+        self.directionX = 0
+
 
 
         
@@ -175,30 +178,62 @@ class Player(pygame.sprite.Sprite):
 
 
     def animation(self):
+        changed = False
         if self.jumping == True:
             self.state = "jumping"
+
+
+
+
+        if self.directionX == -1 and self.facing == "right":
+            self.facing = "left"
+            changed = True
+        elif self.directionX == 1 and self.facing == "left":
+            self.facing = "right"
+            changed = True
         
+        if changed == True:
+            changed = False
+            print("switch")
+
+
+
+
         self.animaFrame = (self.animaFrame+1) % 6
         if self.animaFrame == 5:
             if self.state == "idle":
 
                 self.animaCounter = (self.animaCounter+1) % len(self.idleAnima) # makes it so animacounter constantly counts up to length of list, resets then repeats
                 self.image = self.idleAnima[self.animaCounter] # sets the new image
+                if self.facing == "left":
+                    self.image = pygame.transform.flip(self.image,True,False)
             
             elif self.state == "running":
                 self.animaCounter = (self.animaCounter+1) % len(self.runningAnima) # makes it so animacounter constantly counts up to length of list, resets then repeats
                 self.image = self.runningAnima[self.animaCounter] # sets the new image
+                if self.facing == "left":
+                    self.image = pygame.transform.flip(self.image,True,False)
 
         if self.state == "jumping":
             if self.animaCounter < len(self.jumpingAnima)-3: #  its minus 3 because last 2 images are the falling image and the landing image
                 self.animaCounter += 1
                 self.image = self.jumpingAnima[self.animaCounter]
+                
+                if self.facing == "left":
+                    self.image = pygame.transform.flip(self.image,True,False)
+
             elif self.animaCounter == 6 and self.speedY > 1: # this passes this if statement player is falling 
                 self.state = "falling"
 
             if self.state == "falling":
                 self.image = self.jumpingAnima[7]
 
+                if self.facing == "left":
+                    self.image = pygame.transform.flip(self.image,True,False)
+
+
+
+        print(self.facing)
                     
 
 
@@ -349,9 +384,10 @@ def gameLoop():
 
         # updates player position
         playerGroup.update()
+        print("")
 
         player = playerGroup.sprites()[0] # puts the player sprite within the group inside the variable
-        print(player.state)
+        
         # player y movement
         player.yMove()
             
