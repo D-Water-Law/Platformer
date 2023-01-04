@@ -251,13 +251,25 @@ class Goal(pygame.sprite.Sprite):
     def __init__(self,pos):
         super().__init__()
         
+        # loads images
+        closed = pygame.image.load("images/door/1.png")
+        opened = pygame.image.load("images/door/2.png")
+        doorAnima = [pygame.transform.scale(closed,(32,52)), 
+                     pygame.transform.scale(opened,(32,52))]
+
+
+        
         # creates an image
-        self.image = pygame.Surface((32,52))
-        self.image.fill((0,0,255)) # blue
+        self.image = doorAnima[0]
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft = pos)
 
+    def animation(self):
+        pass
+
+    def update(self):
+        pass
 
 ####################################################################################################
 class Game: # This class will store functions and variables necessary for the gameplay and that manipulate the sprites.
@@ -311,12 +323,14 @@ class Game: # This class will store functions and variables necessary for the ga
                 # if a 1 is found then a player class is created and it passes a certain position in the screen
                 # then it adds the player into the player group
                 elif col == 1:
+                    print(2)
                     player_sprite = Player((col_index*self.unit_width,(row_index*self.unit_height)))
                     self.player.add(player_sprite)
                 elif col == 3:
+                    print(2)
                     endGoal_sprite = Goal((col_index*self.unit_width,(row_index*self.unit_height)-21))
                     self.goal.add(endGoal_sprite)
-
+        print(3)
         return self.player, self.blocks, self.goal
         
 
@@ -367,7 +381,7 @@ def menu():
         buttonGroup.draw(DISPLAYSURF)
         pygame.display.update() # displays changes made in screen
         
-
+print(1)
 def gameLoop():
     clock = pygame.time.Clock()
 
