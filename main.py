@@ -247,6 +247,17 @@ class Block(pygame.sprite.Sprite):
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft=pos)
 
+class Goal(pygame.sprite.Sprite):
+    def __init__(self,pos):
+        super().__init__()
+        
+        # creates an image
+        self.image = pygame.Surface((32,52))
+        self.image.fill((0,0,255)) # blue
+
+        # Puts this image in a specific location in the screen
+        self.rect = self.image.get_rect(topleft = pos)
+
 
 ####################################################################################################
 class Game: # This class will store functions and variables necessary for the gameplay and that manipulate the sprites.
@@ -268,7 +279,7 @@ class Game: # This class will store functions and variables necessary for the ga
             [0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,2,0,0,0,0,0,0,0,0,0,0,0,2,0,2,0,0,0,0],
-            [0,0,2,0,0,0,0,0,0,0,0,0,0,2,0,2,0,0,0,0],
+            [0,0,2,0,0,0,0,0,0,0,0,0,0,2,3,2,0,0,0,0],
             [0,0,0,2,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0],
             [0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -289,6 +300,7 @@ class Game: # This class will store functions and variables necessary for the ga
     def setUpLevel(self): # This function creates all the sprites that are going to be used in this game
         self.blocks = pygame.sprite.Group()# creates a group that will contain all the block sprites
         self.player = pygame.sprite.GroupSingle()# creates a sprite group class that can only contain one sprite which in this case would be player
+        self.goal = pygame.sprite.Group() # will contain all the end goal sprites
         # enumerate() returns (index of the value,the actual value)
         for row_index,row in enumerate(self.levelmap):
             for col_index,col in enumerate(row):
@@ -301,13 +313,17 @@ class Game: # This class will store functions and variables necessary for the ga
                 elif col == 1:
                     player_sprite = Player((col_index*self.unit_width,(row_index*self.unit_height)))
                     self.player.add(player_sprite)
-        
-        return self.player, self.blocks
+                elif col == 3:
+                    endGoal_sprite = Goal((col_index*self.unit_width,(row_index*self.unit_height)-21))
+                    self.goal.add(endGoal_sprite)
+
+        return self.player, self.blocks, self.goal
         
 
     def draw(self,surface): # draws all the sprites within a group to the screen
         self.blocks.draw(surface)
         self.player.draw(surface)
+        self.goal.draw(surface)
 
 
 
@@ -356,7 +372,7 @@ def gameLoop():
     clock = pygame.time.Clock()
 
     game = Game() # creating an instance of the game class
-    playerGroup, blockGroup = game.setUpLevel()
+    playerGroup, blockGroup, goalGroup = game.setUpLevel()
 
     # creates a pygame window and names it 
     DISPLAYSURF = pygame.display.set_mode((640,704)) # window height and width will be 704x640 pixels
