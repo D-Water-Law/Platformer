@@ -105,7 +105,7 @@ class Player(pygame.sprite.Sprite):
         elif self.jumping == False:
             self.state = "idle"
     
-        self.rect.x += self.speedX * self.directionX * 2.5
+        self.rect.x += self.speedX * self.directionX * 4 # 2.5
 
     def yMove(self):
         key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
@@ -254,19 +254,23 @@ class Goal(pygame.sprite.Sprite):
         # loads images
         closed = pygame.image.load("images/door/1.png")
         opened = pygame.image.load("images/door/2.png")
-        doorAnima = [pygame.transform.scale(closed,(32,52)), 
+        self.doorAnima = [pygame.transform.scale(closed,(32,60)), 
                      pygame.transform.scale(opened,(32,52))]
 
 
         
         # creates an image
-        self.image = doorAnima[0]
+        self.image = self.doorAnima[0]
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft = pos)
 
-    def animation(self):
-        pass
+    def switch(self):
+        if self.image == self.doorAnima[0]:
+            self.image = self.doorAnima[1]
+        else:
+            self.image = self.doorAnima[0]
+        
 
     def update(self):
         pass
@@ -328,7 +332,7 @@ class Game: # This class will store functions and variables necessary for the ga
                     self.player.add(player_sprite)
                 elif col == 3:
                     print(2)
-                    endGoal_sprite = Goal((col_index*self.unit_width,(row_index*self.unit_height)-21))
+                    endGoal_sprite = Goal(((col_index*self.unit_width)-1,(row_index*self.unit_height)-25))
                     self.goal.add(endGoal_sprite)
         print(3)
         return self.player, self.blocks, self.goal
@@ -403,13 +407,14 @@ def gameLoop():
 
         # updates player position
         playerGroup.update()
-        print("")
 
         player = playerGroup.sprites()[0] # puts the player sprite within the group inside the variable
         
         # player y movement
         player.yMove()
-            
+        
+        ####################################### Collisions ##############################################################
+
         # Collision handler for y
         for block in blockGroup.sprites(): #loops every block in the game
             if block.rect.colliderect(player): # checks if the block rect and the player rect have collided returns true if so           #if pygame.sprite.spritecollideany(player,blockGroup):
@@ -432,7 +437,12 @@ def gameLoop():
                     player.rect.right = block.rect.left
                 elif player.directionX < 0: # moving left
                     player.rect.left = block.rect.right
-                
+
+        endGoal_sprite = goalGroup.sprites()[0]
+
+        if endGoal_sprite.rect.colliderect(player):
+            endGoal_sprite.switch()
+        ###################################### end of collisions #####################################################        
 
         # resets the whole screen    
         DISPLAYSURF.fill((0,0,0))
