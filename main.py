@@ -257,8 +257,8 @@ class Goal(pygame.sprite.Sprite):
         self.doorAnima = [pygame.transform.scale(closed,(32,60)), 
                      pygame.transform.scale(opened,(32,52))]
 
+        self.state = "close"
 
-        
         # creates an image
         self.image = self.doorAnima[0]
 
@@ -266,14 +266,18 @@ class Goal(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
 
     def switch(self):
-        if self.image == self.doorAnima[0]:
-            self.image = self.doorAnima[1]
-        else:
+        self.state = "open"
+    
+    def animation(self):
+        if self.state == "close":
             self.image = self.doorAnima[0]
+        if self.state == "open":
+            self.image = self.doorAnima[1]
         
 
     def update(self):
-        pass
+        self.animation()
+        self.state = "close"
 
 ####################################################################################################
 class Game: # This class will store functions and variables necessary for the gameplay and that manipulate the sprites.
@@ -442,6 +446,10 @@ def gameLoop():
 
         if endGoal_sprite.rect.colliderect(player):
             endGoal_sprite.switch()
+        
+        endGoal_sprite.update()
+        
+
         ###################################### end of collisions #####################################################        
 
         # resets the whole screen    
