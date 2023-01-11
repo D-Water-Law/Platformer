@@ -258,6 +258,7 @@ class Goal(pygame.sprite.Sprite):
                      pygame.transform.scale(opened,(32,52))]
 
         self.state = "close"
+        self.enter = False
 
         # creates an image
         self.image = self.doorAnima[0]
@@ -409,6 +410,7 @@ def gameLoop():
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
 
+
         # updates player position
         playerGroup.update()
 
@@ -446,8 +448,15 @@ def gameLoop():
 
         if endGoal_sprite.rect.colliderect(player):
             endGoal_sprite.switch()
+
+            if pygame.key.get_pressed()[pygame.K_e]:
+                run = False
+            
+        
         
         endGoal_sprite.update()
+
+        
         
 
         ###################################### end of collisions #####################################################        
