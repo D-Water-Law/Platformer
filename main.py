@@ -421,6 +421,7 @@ def gameLoop():
         
         ####################################### Collisions ##############################################################
 
+        ################################ player collisions #######################################
         # Collision handler for y
         for block in blockGroup.sprites(): #loops every block in the game
             if block.rect.colliderect(player): # checks if the block rect and the player rect have collided returns true if so           #if pygame.sprite.spritecollideany(player,blockGroup):
@@ -444,18 +445,24 @@ def gameLoop():
                 elif player.directionX < 0: # moving left
                     player.rect.left = block.rect.right
 
+        ###################### end of player collisions ###############################
+
+        ###################### endGoal collisions ###########################
         endGoal_sprite = goalGroup.sprites()[0]
 
         if endGoal_sprite.rect.colliderect(player):
             endGoal_sprite.switch()
 
-            if pygame.key.get_pressed()[pygame.K_e]:
-                run = False
+            if pygame.key.get_pressed()[pygame.K_RETURN]:# checks if the key e has been pressed on the keyboard
+                run = False # exits game loop
             
-        
-        
         endGoal_sprite.update()
+        #################### end of endGoal collisions #########################
 
+        #################### Dangerous Objects collision ##########################
+        
+        #################### end of Dangerous objects collisions ###############################
+        
         
         
 
