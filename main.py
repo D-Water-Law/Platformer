@@ -1,4 +1,5 @@
 import pygame
+import time
 pygame.init() # initialises all imported pygame modules
 
 ######################################### Menu buttons #######################################################
@@ -231,8 +232,6 @@ class Player(pygame.sprite.Sprite):
         print(self.facing)
                     
 
-
-
 class Block(pygame.sprite.Sprite):
     def __init__(self,pos,width,height): # pos = position, width,height = width and height of the blocks
         super().__init__()
@@ -280,13 +279,28 @@ class Goal(pygame.sprite.Sprite):
         self.animation()
         self.state = "close"
 
+class Spike(pygame.sprite.Sprite):
+    def __init__(self,pos,size):
+        super().__init__()
+
+        loadedImage = pygame.image.load("images/spikes.png")
+        self.image = pygame.transform.scale(loadedImage,size)
+        self.rect = self.image.get_rect(topleft=pos)
+    
+
+
+    
+
+
+
+
 ####################################################################################################
 class Game: # This class will store functions and variables necessary for the gameplay and that manipulate the sprites.
     def __init__(self):
         # level layout 
         # the game screen is going to be split into a grid. The grid is going to be represented by this 2D array
         # Each cell will contain a number that will indicate what should be in each cell 
-        # 2 represents a block and 1 represent the player
+        # 2 represents a block and 1 represent the player 3 for goal 4 for enemy 5 for spikes
         # 20 spaces in one row
         self.levelmap = [
             [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
@@ -303,7 +317,7 @@ class Game: # This class will store functions and variables necessary for the ga
             [0,0,2,0,0,0,0,0,0,0,0,0,0,2,3,2,0,0,0,0],
             [0,0,0,2,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0],
             [0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,2,2,0,0,5,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,2,2,2,2,2,2,2,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0],
@@ -322,6 +336,7 @@ class Game: # This class will store functions and variables necessary for the ga
         self.blocks = pygame.sprite.Group()# creates a group that will contain all the block sprites
         self.player = pygame.sprite.GroupSingle()# creates a sprite group class that can only contain one sprite which in this case would be player
         self.goal = pygame.sprite.Group() # will contain all the end goal sprites
+        self.danger = pygame.sprite.Group() # will store dangerous objects sprites like spikes and enemies
         # enumerate() returns (index of the value,the actual value)
         for row_index,row in enumerate(self.levelmap):
             for col_index,col in enumerate(row):
@@ -339,14 +354,18 @@ class Game: # This class will store functions and variables necessary for the ga
                     print(2)
                     endGoal_sprite = Goal(((col_index*self.unit_width)-1,(row_index*self.unit_height)-25))
                     self.goal.add(endGoal_sprite)
+                elif col == 5:
+                    spike_sprite = Spike(((col_index*self.unit_width)-1,(row_index*self.unit_height)),(self.unit_width,self.unit_height))
+                    self.danger.add(spike_sprite)
         print(3)
-        return self.player, self.blocks, self.goal
+        return self.player, self.blocks, self.goal, self.danger
         
 
     def draw(self,surface): # draws all the sprites within a group to the screen
         self.blocks.draw(surface)
         self.player.draw(surface)
         self.goal.draw(surface)
+        self.danger.draw(surface)
 
 
 
@@ -395,7 +414,7 @@ def gameLoop():
     clock = pygame.time.Clock()
 
     game = Game() # creating an instance of the game class
-    playerGroup, blockGroup, goalGroup = game.setUpLevel()
+    playerGroup, blockGroup, goalGroup, dangerGroup = game.setUpLevel()
 
     # creates a pygame window and names it 
     DISPLAYSURF = pygame.display.set_mode((640,704)) # window height and width will be 704x640 pixels
@@ -460,7 +479,10 @@ def gameLoop():
         #################### end of endGoal collisions #########################
 
         #################### Dangerous Objects collision ##########################
-        
+        if bool(pygame.sprite.groupcollide(playerGroup,dangerGroup,False,False)) == True: # collision function returns an empty dictionary, the bool function returns False if a dictionary is empty 
+            print("collision")
+            
+
         #################### end of Dangerous objects collisions ###############################
 
         ### pit fall ##
