@@ -462,8 +462,11 @@ def gameLoop():
         #################### Dangerous Objects collision ##########################
         
         #################### end of Dangerous objects collisions ###############################
-        
-        
+
+        ### pit fall ##
+        if player.rect.y > DISPLAYSURF.get_height(): # checks if player has fallen out the screen by comparing
+            run = False                              # the players y value and screen height.
+
         
 
         ###################################### end of collisions #####################################################        
