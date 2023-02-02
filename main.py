@@ -70,7 +70,10 @@ class Player(pygame.sprite.Sprite):
         self.state = "idle" # current state of the player
         self.animaFrame = 0
         self.facing = "right"
+        self.lives = 3 # number of lives the player will have.
         
+    def takelife(self):
+        self.lives -= 1
 
     def jumpReset(self): # resets jump
         self.jumping = False
@@ -229,7 +232,7 @@ class Player(pygame.sprite.Sprite):
 
 
 
-        print(self.facing)
+        # print(self.facing)
                     
 
 class Block(pygame.sprite.Sprite):
@@ -479,8 +482,9 @@ def gameLoop():
         #################### end of endGoal collisions #########################
 
         #################### Dangerous Objects collision ##########################
-        if bool(pygame.sprite.groupcollide(playerGroup,dangerGroup,False,False)) == True: # collision function returns an empty dictionary, the bool function returns False if a dictionary is empty 
-            print("collision")
+        # collision function returns an empty dictionary, the bool function returns False if a dictionary is empty
+        if bool(pygame.sprite.groupcollide(playerGroup,dangerGroup,False,False)) == True: 
+            player.takelife() # takes one life
             
 
         #################### end of Dangerous objects collisions ###############################
@@ -505,6 +509,9 @@ def gameLoop():
         
         # Caps the framerate to 60 Frames per second
         clock.tick(60)
+
+        if player.lives == 0: #ends the game is if the player has no lives left
+            run = False
         
     # Closes all pygame modules
     pygame.quit()
