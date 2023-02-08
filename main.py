@@ -229,8 +229,7 @@ class Enemy(pygame.sprite.Sprite):
         
         self.name = "Enemy"
         # creates an image
-        self.image = pygame.Surface((32,32))
-        self.image.fill((255,0,0))
+        self.image = pygame.image.load("images/ufo_enemy.png")
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(topleft = pos)
@@ -251,6 +250,7 @@ class Enemy(pygame.sprite.Sprite):
         print(self.direction * -1)
         self.direction = self.direction * -1
         self.animaCounter = 0
+        self.image = pygame.transform.flip(self.image,True,False)
         print("flipped")
     
 
