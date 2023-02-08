@@ -71,6 +71,7 @@ class Player(pygame.sprite.Sprite):
         self.animaFrame = 0
         self.facing = "right"
         self.lives = 3 # number of lives the player will have.
+        self.start_pos = pos
         
     def takelife(self):
         self.lives -= 1
@@ -485,6 +486,7 @@ def gameLoop():
         # collision function returns an empty dictionary, the bool function returns False if a dictionary is empty
         if bool(pygame.sprite.groupcollide(playerGroup,dangerGroup,False,False)) == True: 
             player.takelife() # takes one life
+            player.rect.topleft = player.start_pos
             
 
         #################### end of Dangerous objects collisions ###############################
