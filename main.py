@@ -94,10 +94,6 @@ class Player(pygame.sprite.Sprite):
         self.directionX = 0
 
 
-
-        
-
-
     def xMove(self):
         key = pygame.key.get_pressed() #gets all boolean values of the keyboard keys
 
@@ -125,10 +121,6 @@ class Player(pygame.sprite.Sprite):
         # Adds gravity to the player
         self.speedY += self.gravity
         self.rect.y += self.speedY
-
-
-
-
     
     def getRect(self): # returns rect value of player sprite
         return self.rect
@@ -231,10 +223,38 @@ class Player(pygame.sprite.Sprite):
                 if self.facing == "left":
                     self.image = pygame.transform.flip(self.image,True,False)
 
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self,pos):
+        super().__init__()
+        
+        self.name = "Enemy"
+        # creates an image
+        self.image = pygame.Surface((32,32))
+        self.image.fill((255,0,0))
+
+        # Puts this image in a specific location in the screen
+        self.rect = self.image.get_rect(topleft = pos)
+        
+        self.speedY = 2
+        self.direction = 1 # positive interger meaning 1
+
+        self.animaCounter = 0 # animation counter
+
+    def xMove(self):
+        self.rect.x += self.direction * self.speedY
+        self.animaCounter += 1
+        
+        if self.animaCounter == 60*3: # three seconds in game time as 1 second has 60 frames
+            self.flip()
+
+    def flip(self):
+        print(self.direction * -1)
+        self.direction = self.direction * -1
+        self.animaCounter = 0
+        print("flipped")
+    
 
 
-        # print(self.facing)
-                    
 
 class Block(pygame.sprite.Sprite):
     def __init__(self,pos,width,height): # pos = position, width,height = width and height of the blocks
@@ -287,15 +307,12 @@ class Spike(pygame.sprite.Sprite):
     def __init__(self,pos,size):
         super().__init__()
 
+        self.name = "spike"
+
         loadedImage = pygame.image.load("images/spikes.png")
         self.image = pygame.transform.scale(loadedImage,size)
         self.rect = self.image.get_rect(topleft=pos)
     
-
-
-    
-
-
 
 
 ####################################################################################################
@@ -324,9 +341,9 @@ class Game: # This class will store functions and variables necessary for the ga
             [0,0,0,0,0,2,2,0,0,5,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,2,2,2,2,2,2,2,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,2,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-            [0,0,0,0,0,0,2,2,2,2,0,0,2,0,0,0,2,2,0,0],
+            [0,0,0,0,0,0,2,2,2,2,0,0,2,0,0,0,0,2,0,0],
             [0,0,0,0,0,2,2,0,0,2,0,0,2,2,2,2,2,2,0,0],
             [2,2,0,2,2,2,2,0,0,2,0,0,2,2,2,2,2,2,0,0],        
         ] 
@@ -345,20 +362,23 @@ class Game: # This class will store functions and variables necessary for the ga
         for row_index,row in enumerate(self.levelmap):
             for col_index,col in enumerate(row):
                 # if an 2 is found then the programme creates a Block class and passes it a certain position in the screen
-                if col == 2:
+                if col == 2: # Block
                     block_sprite = Block((col_index*self.unit_width,row_index*self.unit_height),self.unit_width,self.unit_height)
                     self.blocks.add(block_sprite) # Adds the block to the blocks group
                 # if a 1 is found then a player class is created and it passes a certain position in the screen
                 # then it adds the player into the player group
-                elif col == 1:
+                elif col == 1: #player
                     print(2)
                     player_sprite = Player((col_index*self.unit_width,(row_index*self.unit_height)))
                     self.player.add(player_sprite)
-                elif col == 3:
+                elif col == 3: # Goal
                     print(2)
                     endGoal_sprite = Goal(((col_index*self.unit_width)-1,(row_index*self.unit_height)-25))
                     self.goal.add(endGoal_sprite)
-                elif col == 5:
+                elif col == 4: # Enemy
+                    enemy_sprite = Enemy((col_index*self.unit_width,(row_index*self.unit_height)))
+                    self.danger.add(enemy_sprite)
+                elif col == 5: # Spike
                     spike_sprite = Spike(((col_index*self.unit_width)-1,(row_index*self.unit_height)),(self.unit_width,self.unit_height))
                     self.danger.add(spike_sprite)
         print(3)
@@ -420,6 +440,12 @@ def gameLoop():
     game = Game() # creating an instance of the game class
     playerGroup, blockGroup, goalGroup, dangerGroup = game.setUpLevel()
 
+    for sprite in dangerGroup.sprites(): # searches for enemy sprite and stores it in the variable enemy
+        if sprite.name == "Enemy":
+            print("found")
+            enemy = sprite
+
+
     # creates a pygame window and names it 
     DISPLAYSURF = pygame.display.set_mode((640,704)) # window height and width will be 704x640 pixels
     pygame.display.set_caption("Test window")
@@ -444,7 +470,7 @@ def gameLoop():
         
         ####################################### Collisions ##############################################################
 
-        ################################ player collisions #######################################
+        ################################ player/enemy collisions with blocks #######################################
         # Collision handler for y
         for block in blockGroup.sprites(): #loops every block in the game
             if block.rect.colliderect(player): # checks if the block rect and the player rect have collided returns true if so           #if pygame.sprite.spritecollideany(player,blockGroup):
@@ -456,9 +482,12 @@ def gameLoop():
                     player.rect.top = block.rect.bottom 
                 
                 player.speedY = 0 #reset player speed to prevent falling through block 
+            
 
         # player x movement
         player.xMove()
+        # enemy x movement
+        enemy.xMove()
 
         # do collision handler for x  
         for block in blockGroup.sprites():
@@ -467,8 +496,14 @@ def gameLoop():
                     player.rect.right = block.rect.left
                 elif player.directionX < 0: # moving left
                     player.rect.left = block.rect.right
+            
+            if block.rect.colliderect(enemy):
+                if enemy.direction == -1: # moving left
+                    enemy.rect.left = block.rect.right
+                elif enemy.direction == 1: # moving right
+                    enemy.rect.right = block.rect.left 
+                enemy.flip()
 
-        ###################### end of player collisions ###############################
 
         ###################### endGoal collisions ###########################
         endGoal_sprite = goalGroup.sprites()[0]
@@ -480,24 +515,25 @@ def gameLoop():
                 run = False # exits game loop
             
         endGoal_sprite.update()
-        #################### end of endGoal collisions #########################
 
-        #################### Dangerous Objects collision ##########################
+        
+        ###################################### end of collisions ##################################################### 
+
+        #################### Dangerous Objects  ##########################
         # collision function returns an empty dictionary, the bool function returns False if a dictionary is empty
         if bool(pygame.sprite.groupcollide(playerGroup,dangerGroup,False,False)) == True: 
             player.takelife() # takes one life
             player.rect.topleft = player.start_pos
             
 
-        #################### end of Dangerous objects collisions ###############################
-
         ### pit fall ##
         if player.rect.y > DISPLAYSURF.get_height(): # checks if player has fallen out the screen by comparing
             run = False                              # the players y value and screen height.
 
+        ### enemy object ####
         
 
-        ###################################### end of collisions #####################################################        
+               
 
         # resets the whole screen    
         DISPLAYSURF.fill((0,0,0))
