@@ -434,6 +434,7 @@ def menu():
         pygame.display.update() # displays changes made in screen
         
 print(1)
+
 def gameLoop():
     clock = pygame.time.Clock()
 
@@ -449,6 +450,9 @@ def gameLoop():
     # creates a pygame window and names it 
     DISPLAYSURF = pygame.display.set_mode((640,704)) # window height and width will be 704x640 pixels
     pygame.display.set_caption("Test window")
+    level_image = pygame.image.load("images/background.jpg") # loads level image
+    # times by 2 so it only gets top left portion of the image
+    level_image = pygame.transform.scale(level_image,(DISPLAYSURF.get_width()*2,DISPLAYSURF.get_height()*2))
 
     run = True
 
@@ -459,7 +463,7 @@ def gameLoop():
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
 
-
+        
         # updates player position
         playerGroup.update()
 
@@ -536,7 +540,8 @@ def gameLoop():
                
 
         # resets the whole screen    
-        DISPLAYSURF.fill((0,0,0))
+        DISPLAYSURF.blit(level_image,(0,0))
+
 
         # draws the player on the screen
         game.draw(DISPLAYSURF)
