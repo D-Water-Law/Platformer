@@ -253,20 +253,23 @@ class Enemy(pygame.sprite.Sprite):
     
     def update(self):
         self.xMove()
-        self.flip()
     
 
+class ImageLoader():
+    def __init__(self):
+        self.bricks = pygame.image.load("images/brick.jpg")
 
+    def getBricks(self):
+        return self.bricks
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self,pos,width,height): # pos = position, width,height = width and height of the blocks
+    def __init__(self,pos,width,height, image): # pos = position, width,height = width and height of the blocks
         super().__init__()
         self.block_height = width
         self.block_width = height
 
-
         # loads and resizes an image
-        loadedImage = pygame.image.load("images/brick.jpg")
+        loadedImage = image
         self.image = pygame.transform.scale(loadedImage,(self.block_width,self.block_height))
 
         # Puts this image in a specific location in the screen
@@ -458,7 +461,8 @@ class Game: # This class will store functions and variables necessary for the ga
         self.blocks = pygame.sprite.Group()# creates a group that will contain all the block sprites
         self.player = pygame.sprite.GroupSingle()# creates a sprite group class that can only contain one sprite which in this case would be player
         self.goal = pygame.sprite.Group() # will contain all the end goal sprites
-        self.danger = pygame.sprite.Group() # will store dangerous objects sprites like spikes and enemies
+        self.danger = pygame.sprite.Group() # will store dangerous objects sprites like spikes 
+        self.enemies = pygame.sprite.Group() # will store enemy sprites
         if level == 1:
             self.levelmap = self.level1map
         elif level == 2: 
@@ -471,30 +475,31 @@ class Game: # This class will store functions and variables necessary for the ga
             self.levelmap = self.level5map
 
         # enumerate() returns (index of the value,the actual value)
+        imageLoader = ImageLoader()
         for row_index,row in enumerate(self.levelmap):
             for col_index,col in enumerate(row):
                 # if an 2 is found then the programme creates a Block class and passes it a certain position in the screen
                 if col == 2: # Block
-                    block_sprite = Block((col_index*self.unit_width,row_index*self.unit_height),self.unit_width,self.unit_height)
+                    block_sprite = Block((col_index*self.unit_width,row_index*self.unit_height),self.unit_width,self.unit_height, imageLoader.getBricks())
                     self.blocks.add(block_sprite) # Adds the block to the blocks group
                 # if a 1 is found then a player class is created and it passes a certain position in the screen
                 # then it adds the player into the player group
                 elif col == 1: #player
-                    print(2)
+                    
                     player_sprite = Player((col_index*self.unit_width,(row_index*self.unit_height)))
                     self.player.add(player_sprite)
                 elif col == 3: # Goal
-                    print(2)
+                    
                     endGoal_sprite = Goal(((col_index*self.unit_width)-1,(row_index*self.unit_height)-25))
                     self.goal.add(endGoal_sprite)
                 elif col == 4: # Enemy
                     enemy_sprite = Enemy((col_index*self.unit_width,(row_index*self.unit_height)))
-                    self.danger.add(enemy_sprite)
+                    self.enemies.add(enemy_sprite)
                 elif col == 5: # Spike
                     spike_sprite = Spike(((col_index*self.unit_width)-1,(row_index*self.unit_height)),(self.unit_width,self.unit_height))
                     self.danger.add(spike_sprite)
-        print(3)
-        return self.player, self.blocks, self.goal, self.danger
+        
+        return self.player, self.blocks, self.goal, self.danger, self.enemies
         
 
     def draw(self,surface): # draws all the sprites within a group to the screen
@@ -502,6 +507,7 @@ class Game: # This class will store functions and variables necessary for the ga
         self.player.draw(surface)
         self.goal.draw(surface)
         self.danger.draw(surface)
+        self.enemies.draw(surface)
 
 
 
@@ -545,13 +551,14 @@ def menu():
         buttonGroup.draw(DISPLAYSURF)
         pygame.display.update() # displays changes made in screen
         
-print(1)
 
 def gameLoop(level): 
     clock = pygame.time.Clock()
 
     game = Game() # creating an instance of the game class
-    playerGroup, blockGroup, goalGroup, dangerGroup = game.setUpLevel(level)
+    print(1)
+    playerGroup, blockGroup, goalGroup, dangerGroup, enemyGroup = game.setUpLevel(level)
+    print(2)
 
     for sprite in dangerGroup.sprites(): # searches for enemy sprite and stores it in the variable enemy
         if sprite.name == "Enemy":
@@ -604,7 +611,7 @@ def gameLoop(level):
         # player x movement
         player.xMove()
         # enemy x movement
-        dangerGroup.update()
+        enemyGroup.update()
 
         # do collision handler for x  
         for block in blockGroup.sprites():
@@ -614,12 +621,15 @@ def gameLoop(level):
                 elif player.directionX < 0: # moving left
                     player.rect.left = block.rect.right
             
-            if block.rect.colliderect(enemy):
-                if enemy.direction == -1: # moving left
-                    enemy.rect.left = block.rect.right
-                elif enemy.direction == 1: # moving right
-                    enemy.rect.right = block.rect.left 
-                enemy.flip()
+            for enemy in enemyGroup.sprites():
+
+                if block.rect.colliderect(enemy):
+                    if enemy.direction == -1: # moving left
+                        enemy.rect.left = block.rect.right
+                    elif enemy.direction == 1: # moving right
+                        enemy.rect.right = block.rect.left 
+                    enemy.flip()
+    
 
 
         ###################### endGoal collisions ###########################
