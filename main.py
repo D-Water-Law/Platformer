@@ -258,9 +258,17 @@ class Enemy(pygame.sprite.Sprite):
 class ImageLoader():
     def __init__(self):
         self.bricks = pygame.image.load("images/brick.jpg")
+        self.heart = pygame.image.load("images/player/heart.png")
 
     def getBricks(self):
         return self.bricks
+    
+    def getheart(self):
+        return self.heart
+
+
+imageLoader = ImageLoader()
+
 
 class Block(pygame.sprite.Sprite):
     def __init__(self,pos,width,height, image): # pos = position, width,height = width and height of the blocks
@@ -383,13 +391,13 @@ class Game: # This class will store functions and variables necessary for the ga
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,2,0,0,0,2,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2],
-            [2,2,2,2,2,2,2,2,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,2,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,2,2,2,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,2,0,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+            [2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,2,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,1,0,0,0,0,0,0,0,2,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,2,0,0,2,2,2,0,0,2,2,2,2,2,5,0,0,0,0,0,0],
             [2,2,2,2,2,2,2,2,2,0,0,0,0,2,5,5,2,0,0,0,0,2,0,0,5,0,0,3],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,2,2,2,2,2,2],
@@ -407,7 +415,7 @@ class Game: # This class will store functions and variables necessary for the ga
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,2],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],#3
             [0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,2,2,0,0,0,0,0,0,0],
             [0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0],
@@ -423,7 +431,7 @@ class Game: # This class will store functions and variables necessary for the ga
             [2,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,2,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,2,0,0,2,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [1,0,0,0,3,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,2,2,2,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [2,2,2,2,2,2,2,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
         ]
@@ -475,7 +483,6 @@ class Game: # This class will store functions and variables necessary for the ga
             self.levelmap = self.level5map
 
         # enumerate() returns (index of the value,the actual value)
-        imageLoader = ImageLoader()
         for row_index,row in enumerate(self.levelmap):
             for col_index,col in enumerate(row):
                 # if an 2 is found then the programme creates a Block class and passes it a certain position in the screen
@@ -523,15 +530,10 @@ def menu():
     buttonGroup = pygame.sprite.Group()
 
     startGame = Button("start",(320,230))
-    selectGame = Button("select",(320,330))
     quitGame = Button("quit",(320,430))
-    options = Button("settings",(585,650),"images/gear_Icon.png")
-
+    
     buttonGroup.add(startGame)
-    buttonGroup.add(selectGame)
     buttonGroup.add(quitGame)
-    buttonGroup.add(options)
-
     
 
     while run:# main menu loop
@@ -572,6 +574,7 @@ def gameLoop(level):
     level_image = pygame.image.load("images/background.jpg") # loads level image
     # times by 2 so it only gets top left portion of the image
     level_image = pygame.transform.scale(level_image,(DISPLAYSURF.get_width()*2,DISPLAYSURF.get_height()*2))
+    font = pygame.font.SysFont("Arial",50)
 
     run = True
     
@@ -582,12 +585,13 @@ def gameLoop(level):
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
                 return "quit"
+        
+        player = playerGroup.sprites()[0] # puts the player sprite within the group inside the variable
 
         
         # updates player position
         playerGroup.update()
 
-        player = playerGroup.sprites()[0] # puts the player sprite within the group inside the variable
         
         # player y movement
         player.yMove()
@@ -614,8 +618,8 @@ def gameLoop(level):
         enemyGroup.update()
 
         # do collision handler for x  
-        for block in blockGroup.sprites():
-            if block.rect.colliderect(player):
+        for block in blockGroup.sprites(): 
+            if block.rect.colliderect(player): #collision between block and player
                 if player.directionX > 0: # moving right
                     player.rect.right = block.rect.left
                 elif player.directionX < 0: # moving left
@@ -623,7 +627,7 @@ def gameLoop(level):
             
             for enemy in enemyGroup.sprites():
 
-                if block.rect.colliderect(enemy):
+                if block.rect.colliderect(enemy): #collision between block and enemy
                     if enemy.direction == -1: # moving left
                         enemy.rect.left = block.rect.right
                     elif enemy.direction == 1: # moving right
@@ -651,12 +655,16 @@ def gameLoop(level):
         if bool(pygame.sprite.groupcollide(playerGroup,dangerGroup,False,False)) == True: 
             player.takelife() # takes one life
             player.rect.topleft = player.start_pos
-            
+        
 
         ### pit fall ##
         if player.rect.y > DISPLAYSURF.get_height(): # checks if player has fallen out the screen by comparing
             player.takelife() # takes one life
-            player.rect.topleft = player.start_pos 
+            player.rect.topleft = player.start_pos
+
+        if bool(pygame.sprite.groupcollide(playerGroup,enemyGroup,False,False)) == True:
+            player.takelife() # takes one life
+            player.rect.topleft = player.start_pos
 
         # resets the whole screen    
         DISPLAYSURF.blit(level_image,(0,0))
@@ -666,6 +674,16 @@ def gameLoop(level):
         game.draw(DISPLAYSURF)
         pygame.draw.rect(DISPLAYSURF,(255,0,0),player.rect,1)
 
+        # HUD
+        for i in range(player.lives):
+            DISPLAYSURF.blit(imageLoader.getheart(),(i*50,0))
+
+        # renders level number text
+        level_text = font.render("LEVEL "+str(level), True, (0,0,0))
+        # displays text on screen
+        DISPLAYSURF.blit(level_text,(390,0))
+        
+            
         # update the screen
         pygame.display.update()
         
@@ -674,9 +692,7 @@ def gameLoop(level):
 
         if player.lives == 0: #ends the game is if the player has no lives left
             run = False
-    
-    # Closes all pygame modules
-    pygame.quit()
+
 
     if player.lives :
         return "win"
@@ -687,12 +703,10 @@ def gameLoop(level):
 
 # if action == "start":
 #     gameLoop()
-# elif action == "select":
-#     pass
 # elif action == "quit":
 #     pass
-# elif action == "settings":
-#     pass
+
+
 
 level = 1
 force_exit = False
