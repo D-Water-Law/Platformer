@@ -1,29 +1,20 @@
 import pygame
-import time
 pygame.init() # initialises all imported pygame modules
 
 ######################################### Menu buttons #######################################################
 class Button(pygame.sprite.Sprite):
-    def __init__(self,command,pos,img=None):
+    def __init__(self,command,pos):
         super().__init__()
-        
         self.command = command
-        # creates an image
-        if self.command != "settings":
-            self.image = pygame.Surface([125,40])
-            self.image.fill((255,255,255))
-        else:
-            # Puts this image in a specific location in the screen
-            loadedImage = pygame.image.load(img)
-            self.image = pygame.transform.scale(loadedImage,(100,100)) # changes size of the image
-            
+        self.image = pygame.Surface([125,40])
+        self.image.fill((255,255,255))
 
         # Puts this image in a specific location in the screen
         self.rect = self.image.get_rect(center=pos)
 
         # Inserts text in buttons
         font = pygame.font.SysFont("Arial",40)
-        self.text = font.render(command, True, (0,0,0))
+        self.text = font.render(self.command, True, (0,0,0))
 
     def getCommand(self):
         return self.command
@@ -31,14 +22,16 @@ class Button(pygame.sprite.Sprite):
     def update(self):
         mousePos = pygame.mouse.get_pos() # gets mouse position
 
-        if self.command != "settings":
-            if self.rect.collidepoint(mousePos): # checks if the position of the mouse is over the button
-                self.image.fill((255,0,0)) #fills button with red
-            else:
-                self.image.fill((255,255,255)) #fills button with white
+        if self.rect.collidepoint(mousePos): # checks if the position of the mouse is over the button
+            self.image.fill((255,0,0)) #fills button with red
+        else:
+            self.image.fill((255,255,255)) #fills button with white
 
-            # blits text into button
-            self.image.blit(self.text,(27,-5))
+        # blits text into button
+        if self.command == "QUIT":
+            self.image.blit(self.text,(23,-5))
+        else:
+            self.image.blit(self.text,(12,-5))
         
         
 
@@ -529,8 +522,8 @@ def menu():
     run = True
     buttonGroup = pygame.sprite.Group()
 
-    startGame = Button("start",(320,230))
-    quitGame = Button("quit",(320,430))
+    startGame = Button("START",(320,330)) 
+    quitGame = Button("QUIT",(320,430))
     
     buttonGroup.add(startGame)
     buttonGroup.add(quitGame)
@@ -542,7 +535,8 @@ def menu():
             # ends game loop if the top right cross button or the escape key is pressed
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # right click
+                # exits function and returns command of button pressed
                 for button in buttonGroup.sprites():
                     if button.rect.collidepoint(mousePos):
                         return button.getCommand()
@@ -699,26 +693,40 @@ def gameLoop(level):
     elif player.lives == 0:
         return "lost"
 
-# action = menu()
+action = menu()
 
-# if action == "start":
-#     gameLoop()
-# elif action == "quit":
-#     pass
+if action == "START":
+    level = 1
+    force_exit = False
+
+    while level <= 5 and force_exit == False:
+        result = gameLoop(level) # initiates gameloop
+        if result == "win": # game will returns win if the player clears the level
+            level += 1
+        elif result == "lost": # game will returns lost if the player doesnt clear level
+            level -= 1
+        elif result == "quit": # if player exits the game the gameLoop returns "quit"
+            force_exit = True
+
+        if level == 0:
+            level = 1
+
+elif action == "QUIT":
+    pygame.quit()
 
 
 
-level = 1
-force_exit = False
+# level = 1
+# force_exit = False
 
-while level <= 5 and force_exit == False:
-    result = gameLoop(level) # initiates gameloop
-    if result == "win": # game will returns win if the player clears the level
-        level += 1
-    elif result == "lost": # game will returns lost if the player doesnt clear level
-        level -= 1
-    elif result == "quit": # if player exits the game the gameLoop returns "quit"
-        force_exit = True
+# while level <= 5 and force_exit == False:
+#     result = gameLoop(level) # initiates gameloop
+#     if result == "win": # game will returns win if the player clears the level
+#         level += 1
+#     elif result == "lost": # game will returns lost if the player doesnt clear level
+#         level -= 1
+#     elif result == "quit": # if player exits the game the gameLoop returns "quit"
+#         force_exit = True
 
-    if level == 0:
-        level = 1
+#     if level == 0:
+#         level = 1
