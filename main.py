@@ -370,7 +370,7 @@ class Game: # This class will store functions and variables necessary for the ga
             [2,0,0,2,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,2,0,0,0],
             [2,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,2,0,0],
             [0,2,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [2,0,2,0,0,0,0,0,0,0,0,4,0,2,0,0,0,0,0,0,4,0,4,0,0,0,0,0],
+            [2,0,2,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,4,0,4,0,0,0,0,0],#4
             [2,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [2,0,0,0,0,0,2,2,2,0,0,0,0,2,5,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [2,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -513,6 +513,8 @@ class Game: # This class will store functions and variables necessary for the ga
 
 
 ############################# Functions ###################################################
+bkg_music = pygame.mixer.Sound("music/bkg_music.ogg")
+bkg_music.set_volume(0.5)
 def menu():
     DISPLAYSURF = pygame.display.set_mode((640,704)) # window height and width will be 704x640 pixels
     pygame.display.set_caption("Menu") # sets name of window
@@ -542,6 +544,8 @@ def menu():
                         return button.getCommand()
                 
         buttonGroup.update()
+
+        #pygame.mixer.Sound.play(bkg_music)
 
         DISPLAYSURF.blit(background,(0,0)) # displays image in screen
         buttonGroup.draw(DISPLAYSURF)
@@ -580,6 +584,7 @@ def gameLoop(level):
                 run = False
                 return "quit"
         
+        pygame.mixer.Sound.play(bkg_music)
         player = playerGroup.sprites()[0] # puts the player sprite within the group inside the variable
 
         
