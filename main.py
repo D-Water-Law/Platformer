@@ -29,9 +29,9 @@ class Button(pygame.sprite.Sprite):
 
         # blits text into button
         if self.command == "QUIT":
-            self.image.blit(self.text,(23,-5))
+            self.image.blit(self.text,(15,-5))
         else:
-            self.image.blit(self.text,(12,-5))
+            self.image.blit(self.text,(0,-5))
         
         
 
@@ -567,7 +567,7 @@ def gameLoop(level):
     
 
     # creates a pygame window and names it 
-    DISPLAYSURF = pygame.display.set_mode((640+(32*10),704)) # window height and width will be 704x640 pixels
+    DISPLAYSURF = pygame.display.set_mode((640+(32*8),704)) # window height and width will be 704x640 pixels
     pygame.display.set_caption("Test window")
     level_image = pygame.image.load("images/background.jpg") # loads level image
     # times by 2 so it only gets top left portion of the image
@@ -584,7 +584,7 @@ def gameLoop(level):
                 run = False
                 return "quit"
         
-        pygame.mixer.Sound.play(bkg_music)
+        #pygame.mixer.Sound.play(bkg_music)
         player = playerGroup.sprites()[0] # puts the player sprite within the group inside the variable
 
         
